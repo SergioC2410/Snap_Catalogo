@@ -36,8 +36,10 @@ export interface StoreConfig {
 	name: string;
 	tagline: string;
 	logoSvgPath: string;
-	whatsappPhone: string; // Formato internacional sin "+", ej: "584121234567"
-	cityLabel: string; // Ej: "Envíos Hoy · Caracas"
+	whatsappPhone: string;
+	cityLabel: string;
+	zonePlaceholder: string;
+	notesPlaceholder: string;
 	fallbackBcvRate: number;
 	paymentMethods: string[];
 	deliveryModes: Array<"Delivery" | "Pick-up">;

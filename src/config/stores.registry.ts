@@ -12,6 +12,9 @@ export const STORES_REGISTRY: Record<string, StoreConfig> = {
 		logoSvgPath: "/stores/kinetix/logo.svg",
 		whatsappPhone: "584120000001",
 		cityLabel: "Envíos Hoy · Caracas",
+		zonePlaceholder: "Ej. Chacao, Torre X / Punto de referencia",
+		notesPlaceholder:
+			"Ej. Color preferido (Negro/Verde) o talla alterna si se agota",
 		fallbackBcvRate: 920.0,
 		paymentMethods: ["Pago Móvil", "Zinli", "Binance Pay", "Efectivo USD"],
 		deliveryModes: ["Delivery", "Pick-up"],
@@ -63,14 +66,16 @@ export const STORES_REGISTRY: Record<string, StoreConfig> = {
 		fallbackBcvRate: 920.0,
 		paymentMethods: ["Pago Móvil", "Binance Pay", "Zelle", "Efectivo USD"],
 		deliveryModes: ["Delivery", "Pick-up"],
+		zonePlaceholder: "Ej. Altamira, Res. X, Piso 3 / Punto de referencia",
+		notesPlaceholder: "Ej. Sin cebolla / Salsa aparte / Avisar al llegar",
 		enableEntryGate: false, // Entra directo al menú sin fricción
 		theme: {
-			accentOklch: "oklch(0.58 0.22 32)", // Naranja brasa / terracota intenso
+			accentOklch: "oklch(0.58 0.22 32)", // Naranja
 			onAccentOklch: "oklch(0.99 0.005 95)",
-			highlightOklch: "oklch(0.76 0.17 75)", // Ámbar tostado
+			highlightOklch: "oklch(0.76 0.17 75)", // Marron
 			controlRadius: "0.5rem",
 			cardRadius: "1.25rem",
-			colorScheme: "dark", // Modo oscuro nocturno para comida rápida
+			colorScheme: "dark", // Modo N Word
 		},
 		dataSource: {
 			type: "local",
