@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   CAPA 1 Y 2: TOKENS SEMÁNTICOS (Fallback sRGB -> Upgrade OKLCH + Display-P3)
+   Los valores de marca (--brand-*) se sobreescriben dinámicamente por tienda.
+   ========================================================================== */
+:root {
+  /* Respaldo seguro sRGB para motores antiguos */
+  --surface-canvas: #faf9f6;
+  --surface-card: #f2f1ed;
+  --surface-elevated: #ffffff;
+  --ink-primary: #141518;
+  --ink-muted: #555861;
+  --border-subtle: #e4e3de;
+
+  /* Identidad inyectable por tienda (Default: Kinetix Performance) */
+  --brand-accent: #111214;
+  --brand-on-accent: #faf9f6;
+  --brand-highlight: #d9f94d;
+  --radius-control: 9999px;
+  --radius-card: 0.75rem;
+
+  /* Curva física elástica nativa (Spring damping) sin JavaScript */
+  --ease-spring: linear(
+    0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%,
+    1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%,
+    1.129 32.8%, 1.051 39.6%, 1.017 43.1%, 0.991, 0.977 51%, 0.974 53.8%,
+    0.975 57.1%, 0.997 69.8%, 1.003 76.9%, 1.004 83.8%, 1
+  );
+
+  /* Compensación de peso tipográfico para contraste perceptual APCA */
+  --font-weight-body: 420;
+}
+
+@supports (color: oklch(0% 0 0)) {
+  :root {
+    --surface-canvas: oklch(0.982 0.004 95);
+    --surface-card: oklch(0.948 0.006 95);
+    --surface-elevated: oklch(0.996 0.002 95);
+    --ink-primary: oklch(0.175 0.012 260);     /* APCA Lc ~95 sobre canvas */
+    --ink-muted: oklch(0.46 0.014 260);        /* APCA Lc ~64 para metadatos */
+    --border-subtle: oklch(0.89 0.008 95);
+    --brand-accent: oklch(0.18 0.012 260);
+    --brand-on-accent: oklch(0.985 0.004 95);
+    --brand-highlight: oklch(0.89 0.21 124);
+  }
+
+  @media (color-gamut: p3) {
+    :root {
+      --brand-highlight: oklch(0.90 0.25 124);
+    }
+  }
+}
+
+/* Modo oscuro suave (Soft-Dark: L=17% para prevenir efecto halo OLED) */
+[data-theme="dark"] {
+  --surface-canvas: oklch(0.17 0.01 260);
+  --surface-card: oklch(0.22 0.012 260);
+  --surface-elevated: oklch(0.25 0.014 260);
+  --ink-primary: oklch(0.93 0.008 95);
+  --ink-muted: oklch(0.72 0.012 260);
+  --border-subtle: oklch(0.30 0.014 260);
+  --font-weight-body: 370; /* Atenuación APCA en polaridad inversa */
+}
+
+/* ==========================================================================
+   CAPA 3: PUENTE TAILWIND CSS v4 (@theme)
+   ========================================================================== */
+@theme {
+  --color-canvas: var(--surface-canvas);
+  --color-card: var(--surface-card);
+  --color-elevated: var(--surface-elevated);
+  --color-ink: var(--ink-primary);
+  --color-muted: var(--ink-muted);
+  --color-line: var(--border-subtle);
+  --color-accent: var(--brand-accent);
+  --color-on-accent: var(--brand-on-accent);
+  --color-highlight: var(--brand-highlight);
+  --radius-ctrl: var(--radius-control);
+  --radius-prod: var(--radius-card);
+}
+
+/* Base global: alineación numérica tabular para USD/Bs y micro-interacción táctil */
+@layer base {
+  html {
+    background-color: var(--surface-canvas);
+    color: var(--ink-primary);
+    font-variation-settings: "wght" var(--font-weight-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .price-tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tactile-btn {
+    touch-action: manipulation;
+    transition: transform 280ms var(--ease-spring), background-color 180ms ease;
+  }
+
+  .tactile-btn:active {
+    transform: scale(0.96);
+  }
+}
+
+/* View Transitions API para cambios de cuadrícula y apertura de detalle */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 240ms;
+}
