@@ -80,6 +80,7 @@ export const STORES_REGISTRY: Record<string, StoreConfig> = {
 };
 
 export const DEFAULT_STORE_SLUG = "kinetix";
+const DEFAULT_STORE = STORES_REGISTRY[DEFAULT_STORE_SLUG] as StoreConfig;
 
 /**
  * Resuelve la configuración de tienda leyendo el parámetro `?tienda=<slug>` de la URL.
@@ -88,5 +89,5 @@ export function resolveActiveStoreConfig(): StoreConfig {
 	const params = new URLSearchParams(window.location.search);
 	const requestedSlug =
 		params.get("tienda")?.toLowerCase().trim() ?? DEFAULT_STORE_SLUG;
-	return STORES_REGISTRY[requestedSlug] ?? STORES_REGISTRY[DEFAULT_STORE_SLUG]!;
+	return STORES_REGISTRY[requestedSlug] ?? DEFAULT_STORE;
 }
