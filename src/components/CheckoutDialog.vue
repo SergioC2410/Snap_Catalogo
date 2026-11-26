@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MessageCircle, Minus, Plus, Trash2, X } from "lucide-vue-next";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import type { CartItem, StoreConfig } from "@/types/store.types";
 import { formatUsd, formatVes } from "@/utils/currency";
 import { buildWhatsAppOrderUrl } from "@/utils/whatsapp";
@@ -31,6 +31,15 @@ const paymentMethod = ref(props.store.paymentMethods[0] ?? "Pago Móvil");
 const notes = ref("");
 const validationError = ref<string | null>(null);
 
+/**
+ * Controla la visibilidad del campo de notas según la política de cada tienda.
+ * En tiendas con política 'single-item' solo se muestra cuando el pedido tiene 1 producto.
+ */
+const showNotesField = computed(() => {
+	if (props.store.notesVisibility === "always") return true;
+	return props.items.length === 1;
+});
+
 watch(
 	() => props.open,
 	(isOpen) => {
@@ -53,6 +62,7 @@ watch(
 	() => {
 		deliveryMode.value = props.store.deliveryModes[0] ?? "Delivery";
 		paymentMethod.value = props.store.paymentMethods[0] ?? "Pago Móvil";
+		notes.value = "";
 		validationError.value = null;
 	},
 );
@@ -63,6 +73,9 @@ function handleBackdropClick(event: MouseEvent): void {
 	}
 }
 
+/**
+ * Valida los datos mínimos de despacho y dispara el ticket formateado hacia WhatsApp.
+ */
 function handleSubmitOrder(): void {
 	if (props.items.length === 0) return;
 
@@ -92,7 +105,7 @@ function handleSubmitOrder(): void {
 			addressOrZone:
 				deliveryMode.value === "Delivery" ? addressOrZone.value : undefined,
 			paymentMethod: paymentMethod.value,
-			notes: notes.value,
+			notes: showNotesField.value ? notes.value : undefined,
 		},
 	);
 
@@ -243,24 +256,14 @@ function handleSubmitOrder(): void {
               <label for="checkout-zone" class="block text-xs font-bold tracking-wider uppercase">
                 Zona / Dirección de Entrega *
               </label>
-                <!-- Input de Zona / Dirección de Entrega -->
-                <input
+              <input
                 id="checkout-zone"
                 v-model="addressOrZone"
                 type="text"
                 required
                 :placeholder="props.store.zonePlaceholder"
                 class="mt-1.5 min-h-11 w-full rounded-ctrl border border-line bg-card px-4 text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-none"
-                />
-
-                <!-- Input de Nota Opcional -->
-                <input
-                id="checkout-notes"
-                v-model="notes"
-                type="text"
-                :placeholder="props.store.notesPlaceholder"
-                class="mt-1.5 min-h-11 w-full rounded-ctrl border border-line bg-card px-4 text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-none"
-                />
+              />
             </div>
 
             <div>
@@ -284,6 +287,20 @@ function handleSubmitOrder(): void {
                 </button>
               </div>
             </div>
+
+            <div v-if="showNotesField">
+              <label for="checkout-notes" class="block text-xs font-bold tracking-wider uppercase">
+                Nota Opcional
+              </label>
+              <input
+                id="checkout-notes"
+                v-model="notes"
+                type="text"
+                :placeholder="props.store.notesPlaceholder"
+                class="mt-1.5 min-h-11 w-full rounded-ctrl border border-line bg-card px-4 text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-none"
+              />
+            </div>
+
             <p
               v-if="validationError"
               role="alert"
@@ -295,7 +312,7 @@ function handleSubmitOrder(): void {
         </template>
       </div>
 
-      <!-- Pie con Totales Duales + CTA Wazaaaaap -->
+      <!-- Pie con Totales Duales y disparo a WhatsApp -->
       <footer
         v-if="props.items.length > 0"
         class="space-y-3 border-t border-line bg-elevated p-4"

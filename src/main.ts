@@ -1,4 +1,3 @@
-// src/main.ts
 import { createApp } from "vue";
 import "./styles/tokens.css";
 import App from "./App.vue";

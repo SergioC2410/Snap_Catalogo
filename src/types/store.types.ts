@@ -25,7 +25,8 @@ export interface EntryGateOption {
 	id: string;
 	label: string;
 	filterCategory: string;
-	imageUrl: string;
+	iconSvgPath?: string;
+	imageUrl?: string;
 }
 
 /**
@@ -40,7 +41,9 @@ export interface StoreConfig {
 	cityLabel: string;
 	zonePlaceholder: string;
 	notesPlaceholder: string;
+	notesVisibility: "always" | "single-item";
 	fallbackBcvRate: number;
+	manualBcvRate?: number; // Opcional: permite al vendedor fijar una tasa exacta manualmente
 	paymentMethods: string[];
 	deliveryModes: Array<"Delivery" | "Pick-up">;
 	enableEntryGate: boolean;

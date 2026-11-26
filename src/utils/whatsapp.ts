@@ -1,4 +1,3 @@
-// src/utils/whatsapp.ts
 import type { CartItem, StoreConfig } from "@/types/store.types";
 import { convertUsdToVes, formatUsd, formatVes } from "./currency";
 
@@ -11,11 +10,8 @@ export interface OrderCheckoutData {
 }
 
 /**
- * Construye el enlace wa.me con el ticket estructurado y total dual (USD + Bs. BCV).
- * @param store Configuración de la tienda destino.
- * @param items Ítems en el carrito con variante explícita.
- * @param bcvRate Tasa BCV vigente aplicada al pedido.
- * @param order Datos de entrega y pago del comprador.
+ * Construye el enlace wa.me con un ticket visualmente limpio, escaneable y con total dual (USD + Bs. BCV).
+ * Mantiene los formatos exactos esperados por el vendedor para despacho rápido.
  */
 export function buildWhatsAppOrderUrl(
 	store: StoreConfig,
@@ -23,31 +19,42 @@ export function buildWhatsAppOrderUrl(
 	bcvRate: number,
 	order: OrderCheckoutData,
 ): string {
-	const totalUsd = items.reduce(
-		(acc, item) => acc + item.unitPriceUsd * item.quantity,
-		0,
-	);
+	const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
+	const totalUsd =
+		items.reduce(
+			(acc, item) => acc + Math.round(item.unitPriceUsd * 100) * item.quantity,
+			0,
+		) / 100;
 	const totalVes = convertUsdToVes(totalUsd, bcvRate);
 
+	const deliveryLine = order.addressOrZone?.trim()
+		? `${order.deliveryMode} — ${order.addressOrZone.trim()}`
+		: order.deliveryMode;
+
 	const lines: string[] = [
-		`*NUEVO PEDIDO — ${store.name.toUpperCase()}*`,
-		`Cliente: ${order.customerName.trim()}`,
-		`Modalidad: ${order.deliveryMode}${order.addressOrZone ? ` (${order.addressOrZone.trim()})` : ""}`,
-		`Pago: ${order.paymentMethod}`,
+		`🛍️ *NUEVO PEDIDO — ${store.name.toUpperCase()}*`,
+		"━━━━━━━━━━━━━━━━━━",
+		`👤 *Cliente:* ${order.customerName.trim()}`,
+		`📍 *Modalidad:* ${deliveryLine}`,
+		`💳 *Pago:* ${order.paymentMethod}`,
 		"",
-		"*Detalle del pedido:*",
-		...items.map(
-			(item) =>
-				`• ${item.quantity}x ${item.name} [${item.variantLabel}] — ${formatUsd(item.unitPriceUsd * item.quantity)}`,
-		),
+		`📦 *Detalle del pedido (${totalItems} ${totalItems === 1 ? "ítem" : "ítems"}):*`,
+		...items.map((item) => {
+			const lineTotal =
+				(Math.round(item.unitPriceUsd * 100) * item.quantity) / 100;
+			return `• ${item.quantity}x ${item.name} [${item.variantLabel}] — ${formatUsd(lineTotal)}`;
+		}),
 		"",
-		`*Total USD:* ${formatUsd(totalUsd)}`,
-		`*Ref. BCV (${bcvRate.toFixed(2)}):* ${formatVes(totalVes)}`,
+		"━━━━━━━━━━━━━━━━━━",
+		`💵 *Total USD:* ${formatUsd(totalUsd)}`,
+		`🇻🇪 *Ref. BCV (${bcvRate.toFixed(2)}):* ${formatVes(totalVes)}`,
 	];
 
 	if (order.notes?.trim()) {
-		lines.push("", `Nota: ${order.notes.trim()}`);
+		lines.push("", `📝 Nota: ${order.notes.trim()}`);
 	}
+
+	lines.push("", "_Tasa BCV referencial sujeta a confirmación al pagar._");
 
 	const encodedMessage = encodeURIComponent(lines.join("\n"));
 	const cleanPhone = store.whatsappPhone.replace(/\D/g, "");

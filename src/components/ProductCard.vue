@@ -240,7 +240,7 @@ function handleIncrement(): void {
           </button>
 
           <span class="price-tabular text-xs font-black text-ink">
-            {{ activeCartQty }} en pedido
+            {{ activeCartQty }}<span class="hidden sm:inline"> en pedido</span>
           </span>
 
           <button

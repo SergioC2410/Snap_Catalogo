@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import type { StoreConfig } from "@/types/store.types";
 
 const props = defineProps<{
@@ -11,8 +11,16 @@ const emit = defineEmits<{
 }>();
 
 const isLeaving = ref(false);
+const logoLoadFailed = ref(false);
 let leaveTimerId: number | undefined;
 let doneTimerId: number | undefined;
+
+watch(
+	() => props.store.logoSvgPath,
+	() => {
+		logoLoadFailed.value = false;
+	},
+);
 
 onMounted(() => {
 	const prefersReducedMotion = window.matchMedia(
@@ -35,9 +43,6 @@ onUnmounted(() => {
 	if (doneTimerId !== undefined) window.clearTimeout(doneTimerId);
 });
 
-/**
- * Genera el monograma de marca tomando las dos primeras iniciales del nombre comercial.
- */
 function getInitials(name: string): string {
 	return name
 		.split(/\s+/)
@@ -57,9 +62,21 @@ function getInitials(name: string): string {
   >
     <div class="splash-content flex flex-col items-center gap-4">
       <div
-        class="splash-mark flex size-20 items-center justify-center rounded-prod bg-accent text-2xl font-black tracking-tight text-on-accent shadow-lg ring-4 ring-highlight/30"
+        class="splash-mark flex size-24 items-center justify-center overflow-hidden rounded-prod bg-elevated p-3 shadow-lg ring-1 ring-line"
       >
-        {{ getInitials(props.store.name) }}
+        <img
+          v-if="!logoLoadFailed"
+          :src="props.store.logoSvgPath"
+          :alt="`Logo ${props.store.name}`"
+          class="size-full object-contain"
+          @error="logoLoadFailed = true"
+        />
+        <span
+          v-else
+          class="flex size-full items-center justify-center rounded-md bg-accent text-2xl font-black text-on-accent"
+        >
+          {{ getInitials(props.store.name) }}
+        </span>
       </div>
 
       <div class="text-center">

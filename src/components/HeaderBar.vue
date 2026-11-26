@@ -1,34 +1,42 @@
 <script setup lang="ts">
-import { ArrowLeftRight, Search, Store, X } from "lucide-vue-next";
-import { ref } from "vue";
-import type { BcvRateSnapshot, StoreConfig } from "@/types/store.types";
+import { ref, watch } from 'vue';
+import { ArrowLeftRight, Search, Store, X } from 'lucide-vue-next';
+import type { BcvRateSnapshot, StoreConfig } from '@/types/store.types';
 
 const props = defineProps<{
-	store: StoreConfig;
-	demoStores: StoreConfig[];
-	bcvSnapshot: BcvRateSnapshot;
-	displayCurrency: "USD" | "VES";
-	searchQuery: string;
+  store: StoreConfig;
+  demoStores: StoreConfig[];
+  bcvSnapshot: BcvRateSnapshot;
+  displayCurrency: 'USD' | 'VES';
+  searchQuery: string;
 }>();
 
 const emit = defineEmits<{
-	"update:searchQuery": [value: string];
-	toggleCurrency: [];
-	switchStore: [slug: string];
+  'update:searchQuery': [value: string];
+  toggleCurrency: [];
+  switchStore: [slug: string];
 }>();
 
 const isSearchOpen = ref(false);
+const logoFailed = ref(false);
+
+watch(
+  () => props.store.logoSvgPath,
+  () => {
+    logoFailed.value = false;
+  },
+);
 
 function toggleSearch(): void {
-	isSearchOpen.value = !isSearchOpen.value;
-	if (!isSearchOpen.value && props.searchQuery) {
-		emit("update:searchQuery", "");
-	}
+  isSearchOpen.value = !isSearchOpen.value;
+  if (!isSearchOpen.value && props.searchQuery) {
+    emit('update:searchQuery', '');
+  }
 }
 
 function handleInput(event: Event): void {
-	const target = event.target as HTMLInputElement | null;
-	emit("update:searchQuery", target?.value ?? "");
+  const target = event.target as HTMLInputElement | null;
+  emit('update:searchQuery', target?.value ?? '');
 }
 </script>
 
@@ -69,13 +77,27 @@ function handleInput(event: Event): void {
 
     <!-- Barra principal de navegación -->
     <div class="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
-      <div class="min-w-0">
-        <p class="truncate text-base font-black tracking-[0.12em] text-ink uppercase">
-          {{ props.store.name }}
-        </p>
-        <p class="truncate text-xs font-medium text-muted">
-          {{ props.store.cityLabel }}
-        </p>
+      <div class="flex min-w-0 items-center gap-2.5">
+        <div
+          v-if="!logoFailed"
+          class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-prod border border-line bg-elevated p-1.5"
+        >
+          <img
+            :src="props.store.logoSvgPath"
+            :alt="`Logo ${props.store.name}`"
+            class="size-full object-contain"
+            @error="logoFailed = true"
+          />
+        </div>
+
+        <div class="min-w-0">
+          <p class="truncate text-base font-black tracking-[0.12em] text-ink uppercase">
+            {{ props.store.name }}
+          </p>
+          <p class="truncate text-xs font-medium text-muted">
+            {{ props.store.cityLabel }}
+          </p>
+        </div>
       </div>
 
       <div class="flex items-center gap-2">

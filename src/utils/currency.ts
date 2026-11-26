@@ -1,8 +1,6 @@
-// src/utils/currency.ts
-
 /**
  * Convierte un monto en USD a bolívares redondeado a 2 decimales exactos
- * usando aritmética escalada para mitigar imprecisiones binarias de IEEE 754.
+ * usando aritmética escalada para mitigar imprecisiones binarias
  */
 export function convertUsdToVes(amountUsd: number, bcvRate: number): number {
 	const centsUsd = Math.round(amountUsd * 100);
@@ -10,7 +8,7 @@ export function convertUsdToVes(amountUsd: number, bcvRate: number): number {
 }
 
 /**
- * Formatea precios en USD estándar (ej. "$60.00").
+ * Formatea precios en USD estándar.
  */
 export function formatUsd(amountUsd: number): string {
 	return new Intl.NumberFormat("en-US", {
@@ -21,7 +19,7 @@ export function formatUsd(amountUsd: number): string {
 }
 
 /**
- * Formatea montos en bolívares al formato venezolano (ej. "Bs. 55.125,97").
+ * Formatea montos en bolívares al formato venezolano (ejemplo Bs. 55.125,97).
  */
 export function formatVes(amountVes: number): string {
 	const formatted = new Intl.NumberFormat("es-VE", {

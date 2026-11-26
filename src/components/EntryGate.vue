@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Store } from "lucide-vue-next";
+import { ref, watch } from "vue";
 import type { EntryGateOption, StoreConfig } from "@/types/store.types";
 
 const props = defineProps<{
@@ -12,8 +13,24 @@ const emit = defineEmits<{
 	switchStore: [slug: string];
 }>();
 
+const failedAssets = ref<Record<string, boolean>>({});
+
+watch(
+	() => props.store.slug,
+	() => {
+		failedAssets.value = {};
+	},
+);
+
 function handleChoose(category: string): void {
 	emit("select", category);
+}
+
+function markAssetFailed(optionId: string): void {
+	failedAssets.value = {
+		...failedAssets.value,
+		[optionId]: true,
+	};
 }
 </script>
 
@@ -60,30 +77,49 @@ function handleChoose(category: string): void {
           ¿Qué estás buscando hoy?
         </h1>
         <p class="mt-2 text-sm text-muted">
-          Personaliza tu vista para llegar en segundos a lo que necesitas.
+          Elige una línea para filtrar el catálogo al instante.
         </p>
       </header>
 
-      <div class="mx-auto my-6 grid w-full max-w-xl grid-cols-2 gap-3 sm:grid-cols-3">
+      <!-- Cuadrícula 2x2 de iconos vectoriales por categoría -->
+      <div class="mx-auto my-6 grid w-full max-w-xl grid-cols-2 gap-3.5">
         <button
           v-for="option in (props.store.entryGateOptions ?? ([] as EntryGateOption[]))"
           :key="option.id"
           type="button"
-          class="tactile-btn group relative flex flex-col overflow-hidden rounded-prod border border-line bg-card text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          class="tactile-btn group flex flex-col justify-between overflow-hidden rounded-prod border border-line bg-card/80 p-3.5 text-left transition-colors hover:border-accent hover:bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           @click="handleChoose(option.filterCategory)"
         >
-          <div class="aspect-[4/5] w-full overflow-hidden bg-card">
+          <div class="flex aspect-[5/4] w-full items-center justify-center rounded-lg bg-elevated/80 p-4">
             <img
+              v-if="option.iconSvgPath && !failedAssets[option.id]"
+              :src="option.iconSvgPath"
+              alt=""
+              aria-hidden="true"
+              class="size-20 object-contain transition-transform duration-300 group-hover:scale-105 sm:size-24 [[data-theme='dark']_&]:invert"
+              @error="markAssetFailed(option.id)"
+            />
+
+            <img
+              v-else-if="option.imageUrl && !failedAssets[option.id]"
               :src="option.imageUrl"
               :alt="option.label"
-              class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="eager"
-              decoding="async"
+              class="size-full rounded-md object-cover"
+              @error="markAssetFailed(option.id)"
             />
-          </div>
-          <div class="p-3">
+
             <span
-              class="flex min-h-11 w-full items-center justify-center rounded-ctrl bg-accent px-3 text-xs font-bold tracking-wider text-on-accent uppercase"
+              v-else
+              class="text-3xl font-black tracking-wider text-ink uppercase"
+              aria-hidden="true"
+            >
+              {{ option.label.slice(0, 2) }}
+            </span>
+          </div>
+
+          <div class="mt-3">
+            <span
+              class="flex min-h-11 w-full items-center justify-center rounded-ctrl bg-accent px-3 text-xs font-extrabold tracking-wider text-on-accent uppercase"
             >
               {{ option.label }}
             </span>

@@ -15,10 +15,11 @@ import type {
 const activeStore = ref<StoreConfig>(resolveActiveStoreConfig());
 const products = ref<Product[]>([]);
 const isLoading = ref<boolean>(true);
+const isRefreshingBcv = ref<boolean>(false);
 const loadError = ref<string | null>(null);
 const displayCurrency = ref<"USD" | "VES">("USD");
 const bcvSnapshot = ref<BcvRateSnapshot>({
-	usd: activeStore.value.fallbackBcvRate,
+	usd: activeStore.value.manualBcvRate ?? activeStore.value.fallbackBcvRate,
 	effectiveDate: new Date().toISOString(),
 	fetchedAt: Date.now(),
 	source: "fallback",
@@ -26,6 +27,7 @@ const bcvSnapshot = ref<BcvRateSnapshot>({
 
 /**
  * Aplica los tokens OKLCH, radios y esquema de color de la tienda en el DOM raíz.
+ * @param store Configuración visual y operativa de la tienda activa.
  */
 function applyStoreThemeToDocument(store: StoreConfig): void {
 	const root = document.documentElement;
@@ -40,6 +42,7 @@ function applyStoreThemeToDocument(store: StoreConfig): void {
 
 /**
  * Inicializa la tienda activa, descarga la tasa BCV y carga el inventario desde el adaptador.
+ * @param targetStore Tienda opcional para sobrescribir la tienda resuelta por URL.
  */
 async function bootstrapStore(targetStore?: StoreConfig): Promise<void> {
 	if (targetStore) {
@@ -56,7 +59,11 @@ async function bootstrapStore(targetStore?: StoreConfig): Promise<void> {
 			loadLocalSeedProducts,
 		);
 		const [rate, catalog] = await Promise.all([
-			getDailyBcvRate(activeStore.value.fallbackBcvRate),
+			getDailyBcvRate(
+				activeStore.value.fallbackBcvRate,
+				false,
+				activeStore.value.manualBcvRate,
+			),
 			repo.getProducts(),
 		]);
 		bcvSnapshot.value = rate;
@@ -70,8 +77,27 @@ async function bootstrapStore(targetStore?: StoreConfig): Promise<void> {
 }
 
 /**
- * Permite cambiar de tienda demo en vivo (útil para presentaciones comerciales)
- * utilizando View Transitions API y sincronizando la URL sin recargar.
+ * Fuerza la consulta en vivo de la tasa BCV ignorando el caché local.
+ */
+async function refreshBcvRate(): Promise<void> {
+	if (isRefreshingBcv.value) return;
+	isRefreshingBcv.value = true;
+
+	try {
+		bcvSnapshot.value = await getDailyBcvRate(
+			activeStore.value.fallbackBcvRate,
+			true,
+			activeStore.value.manualBcvRate,
+		);
+	} finally {
+		isRefreshingBcv.value = false;
+	}
+}
+
+/**
+ * Permite cambiar de tienda demo en vivo utilizando View Transitions API
+ * y sincronizando el parámetro `?tienda=` de la URL sin recargar.
+ * @param slug Identificador de la tienda registrada en STORES_REGISTRY.
  */
 async function switchStoreDemo(slug: string): Promise<void> {
 	const nextStore = STORES_REGISTRY[slug];
@@ -92,6 +118,9 @@ async function switchStoreDemo(slug: string): Promise<void> {
 	}
 }
 
+/**
+ * Composable de estado global para tienda activa, inventario, moneda y tasa BCV.
+ */
 export function useStore() {
 	const categories = computed(() => {
 		const unique = new Set(products.value.map((p) => p.category));
@@ -107,11 +136,13 @@ export function useStore() {
 		products,
 		categories,
 		isLoading,
+		isRefreshingBcv,
 		loadError,
 		displayCurrency,
 		bcvSnapshot,
 		availableDemoStores: Object.values(STORES_REGISTRY),
 		bootstrapStore,
+		refreshBcvRate,
 		switchStoreDemo,
 		toggleCurrency,
 	};

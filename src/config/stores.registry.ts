@@ -13,9 +13,9 @@ export const STORES_REGISTRY: Record<string, StoreConfig> = {
 		whatsappPhone: "584120000001",
 		cityLabel: "Envíos Hoy · Caracas",
 		zonePlaceholder: "Ej. Chacao, Torre X / Punto de referencia",
-		notesPlaceholder:
-			"Ej. Color preferido (Negro/Verde) o talla alterna si se agota",
-		fallbackBcvRate: 920.0,
+		notesPlaceholder: "Ej. Color preferido o talla alterna si se agota",
+		notesVisibility: "single-item",
+		fallbackBcvRate: 926.3,
 		paymentMethods: ["Pago Móvil", "Zinli", "Binance Pay", "Efectivo USD"],
 		deliveryModes: ["Delivery", "Pick-up"],
 		enableEntryGate: true,
@@ -24,28 +24,31 @@ export const STORES_REGISTRY: Record<string, StoreConfig> = {
 				id: "hombre",
 				label: "HOMBRE",
 				filterCategory: "Hombre",
-				imageUrl:
-					"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80",
+				iconSvgPath: "/stores/kinetix/icon-men.svg",
 			},
 			{
 				id: "mujer",
 				label: "MUJER",
 				filterCategory: "Mujer",
-				imageUrl:
-					"https://images.unsplash.com/photo-1518310383802-640c2de311b2?auto=format&fit=crop&w=800&q=80",
+				iconSvgPath: "/stores/kinetix/icon-women.svg",
 			},
 			{
 				id: "suplementos",
 				label: "SUPLEMENTOS",
 				filterCategory: "Suplementos",
-				imageUrl:
-					"https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=800&q=80",
+				iconSvgPath: "/stores/kinetix/icon-supplements.svg",
+			},
+			{
+				id: "accesorios",
+				label: "ACCESORIOS",
+				filterCategory: "Accesorios",
+				iconSvgPath: "/stores/kinetix/icon-accessories.svg",
 			},
 		],
 		theme: {
 			accentOklch: "oklch(0.18 0.012 260)",
 			onAccentOklch: "oklch(0.985 0.004 95)",
-			highlightOklch: "oklch(0.89 0.21 124)", // Lima técnico deportivo
+			highlightOklch: "oklch(0.89 0.21 124)",
 			controlRadius: "9999px",
 			cardRadius: "0.75rem",
 			colorScheme: "light",
@@ -61,21 +64,22 @@ export const STORES_REGISTRY: Record<string, StoreConfig> = {
 		name: "BRASA URBANA",
 		tagline: "Smash Burgers & Street Grill · Caracas",
 		logoSvgPath: "/stores/brasa/logo.svg",
-		whatsappPhone: "584120000002",
+		whatsappPhone: "584149998877",
 		cityLabel: "Delivery Express 35 min · Caracas",
-		fallbackBcvRate: 920.0,
-		paymentMethods: ["Pago Móvil", "Binance Pay", "Zelle", "Efectivo USD"],
-		deliveryModes: ["Delivery", "Pick-up"],
 		zonePlaceholder: "Ej. Altamira, Res. X, Piso 3 / Punto de referencia",
 		notesPlaceholder: "Ej. Sin cebolla / Salsa aparte / Avisar al llegar",
-		enableEntryGate: false, // Entra directo al menú sin fricción
+		notesVisibility: "always",
+		fallbackBcvRate: 926.3,
+		paymentMethods: ["Pago Móvil", "Binance Pay", "Zelle", "Efectivo USD"],
+		deliveryModes: ["Delivery", "Pick-up"],
+		enableEntryGate: false,
 		theme: {
-			accentOklch: "oklch(0.58 0.22 32)", // Naranja
+			accentOklch: "oklch(0.58 0.22 32)",
 			onAccentOklch: "oklch(0.99 0.005 95)",
-			highlightOklch: "oklch(0.76 0.17 75)", // Marron
+			highlightOklch: "oklch(0.76 0.17 75)",
 			controlRadius: "0.5rem",
 			cardRadius: "1.25rem",
-			colorScheme: "dark", // Modo N Word
+			colorScheme: "dark",
 		},
 		dataSource: {
 			type: "local",
@@ -85,6 +89,7 @@ export const STORES_REGISTRY: Record<string, StoreConfig> = {
 };
 
 export const DEFAULT_STORE_SLUG = "kinetix";
+
 const DEFAULT_STORE = STORES_REGISTRY[DEFAULT_STORE_SLUG] as StoreConfig;
 
 /**
