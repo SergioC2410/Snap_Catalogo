@@ -25,6 +25,7 @@ const {
 	bcvSnapshot,
 	availableDemoStores,
 	bootstrapStore,
+	refreshBcvRate,
 	switchStoreDemo,
 	toggleCurrency,
 } = useStore();
@@ -164,7 +165,7 @@ function resetFilters(): void {
   />
 
   <div v-else class="min-h-dvh bg-canvas pb-28 text-ink">
-    <HeaderBar
+<HeaderBar
       v-model:search-query="searchQuery"
       :store="activeStore"
       :demo-stores="availableDemoStores"
@@ -172,6 +173,7 @@ function resetFilters(): void {
       :display-currency="displayCurrency"
       @toggle-currency="toggleCurrency"
       @switch-store="handleSwitchStore"
+      @refresh-bcv="refreshBcvRate"
     />
 
     <main>

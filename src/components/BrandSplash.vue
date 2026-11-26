@@ -68,7 +68,7 @@ function getInitials(name: string): string {
           v-if="!logoLoadFailed"
           :src="props.store.logoSvgPath"
           :alt="`Logo ${props.store.name}`"
-          class="size-full object-contain"
+          class="size-full object-contain in-data-[theme='dark']:invert"
           @error="logoLoadFailed = true"
         />
         <span

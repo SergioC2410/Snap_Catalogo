@@ -115,7 +115,7 @@ function handleIncrement(): void {
     class="group flex flex-col overflow-hidden rounded-prod border border-line/80 bg-elevated transition-shadow hover:shadow-sm"
   >
     <!-- Fotografía fija 4:5 (CLS = 0) -->
-    <div class="relative aspect-[4/5] w-full overflow-hidden bg-card">
+    <div class="relative aspect-4/5 w-full overflow-hidden bg-card">
       <button
         type="button"
         class="block size-full cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-accent"
@@ -154,7 +154,8 @@ function handleIncrement(): void {
     </div>
 
     <!-- Cuerpo informativo y selector táctil de variantes -->
-    <div class="flex flex-1 flex-col justify-between p-3 sm:p-4">
+<!-- Cuerpo informativo y selector táctil de variantes -->
+    <div class="flex flex-1 flex-col p-3 sm:p-4">
       <div>
         <button
           type="button"
@@ -186,39 +187,39 @@ function handleIncrement(): void {
         </div>
       </div>
 
-      <!-- Variantes + CTA reversible (Agregar ↔ Stepper táctil) -->
-      <div class="mt-3 space-y-2.5">
-        <div
-          role="radiogroup"
-          :aria-label="`Seleccionar ${props.product.variantLabel}`"
-          class="flex flex-wrap gap-1.5"
+      <!-- Variantes pegadas al precio -->
+      <div
+        role="radiogroup"
+        :aria-label="`Seleccionar ${props.product.variantLabel}`"
+        class="mt-3 flex flex-wrap gap-1.5"
+      >
+        <button
+          v-for="variant in props.product.variants"
+          :key="variant.id"
+          type="button"
+          role="radio"
+          :aria-checked="selectedVariant?.id === variant.id"
+          :disabled="variant.stock <= 0"
+          class="tactile-btn relative inline-flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-ctrl border px-2.5 text-[11px] font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-40 disabled:line-through"
+          :class="
+            selectedVariant?.id === variant.id
+              ? 'border-accent bg-accent text-on-accent'
+              : 'border-line bg-card text-ink hover:border-accent'
+          "
+          @click="selectedVariant = variant"
         >
-          <button
-            v-for="variant in props.product.variants"
-            :key="variant.id"
-            type="button"
-            role="radio"
-            :aria-checked="selectedVariant?.id === variant.id"
-            :disabled="variant.stock <= 0"
-            class="tactile-btn relative inline-flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-ctrl border px-2.5 text-[11px] font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-40 disabled:line-through"
-            :class="
-              selectedVariant?.id === variant.id
-                ? 'border-accent bg-accent text-on-accent'
-                : 'border-line bg-card text-ink hover:border-accent'
-            "
-            @click="selectedVariant = variant"
+          <span>{{ variant.label }}</span>
+          <span
+            v-if="getVariantCartCount(variant.id) > 0"
+            class="price-tabular inline-flex size-4 items-center justify-center rounded-full bg-highlight text-[10px] font-black text-neutral-950"
           >
-            <span>{{ variant.label }}</span>
-            <span
-              v-if="getVariantCartCount(variant.id) > 0"
-              class="price-tabular inline-flex size-4 items-center justify-center rounded-full bg-highlight text-[10px] font-black text-neutral-950"
-            >
-              {{ getVariantCartCount(variant.id) }}
-            </span>
-          </button>
-        </div>
+            {{ getVariantCartCount(variant.id) }}
+          </span>
+        </button>
+      </div>
 
-        <!-- Stepper en línea cuando la variante activa ya está en el carrito -->
+      <!-- CTA siempre alineado al borde inferior de la tarjeta -->
+      <div class="mt-auto pt-3">
         <div
           v-if="activeCartQty > 0 && selectedVariant"
           class="flex min-h-11 items-center justify-between rounded-ctrl border-2 border-accent bg-card p-0.5"
@@ -254,7 +255,6 @@ function handleIncrement(): void {
           </button>
         </div>
 
-        <!-- Botón inicial cuando aún no está en el carrito -->
         <button
           v-else
           type="button"

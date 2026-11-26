@@ -90,13 +90,13 @@ function markAssetFailed(optionId: string): void {
           class="tactile-btn group flex flex-col justify-between overflow-hidden rounded-prod border border-line bg-card/80 p-3.5 text-left transition-colors hover:border-accent hover:bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           @click="handleChoose(option.filterCategory)"
         >
-          <div class="flex aspect-[5/4] w-full items-center justify-center rounded-lg bg-elevated/80 p-4">
+          <div class="flex aspect-5/4 w-full items-center justify-center rounded-lg bg-elevated/80 p-4">
             <img
               v-if="option.iconSvgPath && !failedAssets[option.id]"
               :src="option.iconSvgPath"
               alt=""
               aria-hidden="true"
-              class="size-20 object-contain transition-transform duration-300 group-hover:scale-105 sm:size-24 [[data-theme='dark']_&]:invert"
+              class="in-data-[theme='dark']:invert[[data-theme='dark']_&]:invert"
               @error="markAssetFailed(option.id)"
             />
 
