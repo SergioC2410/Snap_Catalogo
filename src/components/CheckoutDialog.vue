@@ -1,9 +1,21 @@
 <script setup lang="ts">
-import { MessageCircle, Minus, Plus, Trash2, X } from "lucide-vue-next";
+import {
+	Check,
+	Copy,
+	MessageCircle,
+	Minus,
+	Plus,
+	Trash2,
+	X,
+} from "lucide-vue-next";
 import { computed, ref, watch } from "vue";
 import type { CartItem, StoreConfig } from "@/types/store.types";
 import { formatUsd, formatVes } from "@/utils/currency";
-import { buildWhatsAppOrderUrl } from "@/utils/whatsapp";
+import {
+	buildWhatsAppOrderMessage,
+	buildWhatsAppOrderUrl,
+	isDemoWhatsAppPhone,
+} from "@/utils/whatsapp";
 
 const props = defineProps<{
 	open: boolean;
@@ -30,6 +42,12 @@ const addressOrZone = ref("");
 const paymentMethod = ref(props.store.paymentMethods[0] ?? "Pago Móvil");
 const notes = ref("");
 const validationError = ref<string | null>(null);
+const previewTicket = ref<string | null>(null);
+const copiedTicket = ref(false);
+
+const isDemoPhone = computed(() =>
+	isDemoWhatsAppPhone(props.store.whatsappPhone),
+);
 
 /**
  * Controla la visibilidad del campo de notas según la política de cada tienda.
@@ -48,6 +66,8 @@ watch(
 
 		if (isOpen) {
 			validationError.value = null;
+			previewTicket.value = null;
+			copiedTicket.value = false;
 			if (!dialog.open) {
 				dialog.showModal();
 			}
@@ -64,6 +84,8 @@ watch(
 		paymentMethod.value = props.store.paymentMethods[0] ?? "Pago Móvil";
 		notes.value = "";
 		validationError.value = null;
+		previewTicket.value = null;
+		copiedTicket.value = false;
 	},
 );
 
@@ -73,8 +95,22 @@ function handleBackdropClick(event: MouseEvent): void {
 	}
 }
 
+async function handleCopyPreviewTicket(): Promise<void> {
+	if (!previewTicket.value) return;
+	try {
+		await navigator.clipboard.writeText(previewTicket.value);
+		copiedTicket.value = true;
+		window.setTimeout(() => {
+			copiedTicket.value = false;
+		}, 2000);
+	} catch {
+		copiedTicket.value = false;
+	}
+}
+
 /**
- * Valida los datos mínimos de despacho y dispara el ticket formateado hacia WhatsApp.
+ * Valida los datos mínimos de despacho. Si el número es de demostración (`584120000000`),
+ * muestra el ticket en pantalla sin abrir WhatsApp para evitar envíos accidentales.
  */
 function handleSubmitOrder(): void {
 	if (props.items.length === 0) return;
@@ -95,18 +131,30 @@ function handleSubmitOrder(): void {
 
 	validationError.value = null;
 
+	const orderPayload = {
+		customerName: customerName.value,
+		deliveryMode: deliveryMode.value,
+		addressOrZone:
+			deliveryMode.value === "Delivery" ? addressOrZone.value : undefined,
+		paymentMethod: paymentMethod.value,
+		notes: showNotesField.value ? notes.value : undefined,
+	};
+
+	if (isDemoPhone.value) {
+		previewTicket.value = buildWhatsAppOrderMessage(
+			props.store,
+			props.items,
+			props.bcvRate,
+			orderPayload,
+		);
+		return;
+	}
+
 	const whatsappUrl = buildWhatsAppOrderUrl(
 		props.store,
 		props.items,
 		props.bcvRate,
-		{
-			customerName: customerName.value,
-			deliveryMode: deliveryMode.value,
-			addressOrZone:
-				deliveryMode.value === "Delivery" ? addressOrZone.value : undefined,
-			paymentMethod: paymentMethod.value,
-			notes: showNotesField.value ? notes.value : undefined,
-		},
+		orderPayload,
 	);
 
 	window.open(whatsappUrl, "_blank", "noopener,noreferrer");
@@ -308,6 +356,28 @@ function handleSubmitOrder(): void {
             >
               {{ validationError }}
             </p>
+
+            <!-- Vista previa segura cuando la tienda usa número de demostración -->
+            <div
+              v-if="previewTicket"
+              class="space-y-2.5 rounded-prod border border-amber-500/50 bg-card p-3.5 text-xs"
+            >
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-amber-600 uppercase">
+                  Modo demo activo (no se abre WhatsApp)
+                </span>
+                <button
+                  type="button"
+                  class="tactile-btn inline-flex min-h-9 items-center gap-1.5 rounded-ctrl border border-line bg-elevated px-3 font-bold text-ink hover:border-accent"
+                  @click="handleCopyPreviewTicket"
+                >
+                  <Check v-if="copiedTicket" class="size-3.5 text-emerald-600" aria-hidden="true" />
+                  <Copy v-else class="size-3.5" aria-hidden="true" />
+                  <span>{{ copiedTicket ? "Copiado" : "Copiar ticket" }}</span>
+                </button>
+              </div>
+              <pre class="whitespace-pre-wrap font-sans text-xs leading-relaxed text-ink">{{ previewTicket }}</pre>
+            </div>
           </form>
         </template>
       </div>
@@ -333,7 +403,7 @@ function handleSubmitOrder(): void {
           class="tactile-btn inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-ctrl bg-emerald-600 px-4 text-xs font-black tracking-wider text-white uppercase shadow-md hover:bg-emerald-700"
         >
           <MessageCircle class="size-4" aria-hidden="true" />
-          <span>Enviar Pedido por WhatsApp</span>
+          <span>{{ isDemoPhone ? "Generar Vista Previa (Demo)" : "Enviar Pedido por WhatsApp" }}</span>
         </button>
       </footer>
     </div>

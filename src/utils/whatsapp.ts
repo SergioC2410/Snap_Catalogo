@@ -9,11 +9,36 @@ export interface OrderCheckoutData {
 	notes?: string;
 }
 
+const DEMO_PHONE_NUMBERS = new Set<string>(["584120000000", "584120000001"]);
+
 /**
- * Construye el enlace wa.me con un ticket visualmente limpio, escaneable y con total dual (USD + Bs. BCV).
- * Mantiene los formatos exactos esperados por el vendedor para despacho rápido.
+ * Normaliza el teléfono de la tienda dejando únicamente dígitos.
+ * @param phone Número configurado en la tienda.
  */
-export function buildWhatsAppOrderUrl(
+export function normalizeWhatsAppPhone(phone: string): string {
+	return phone.replace(/\D/g, "");
+}
+
+/**
+ * Indica si el número configurado corresponde a un número ficticio de pruebas/demo
+ * para evitar abrir chats externos por accidente.
+ * @param phone Número de teléfono de la tienda.
+ */
+export function isDemoWhatsAppPhone(phone: string): boolean {
+	const digits = normalizeWhatsAppPhone(phone);
+	if (!digits) return true;
+	if (DEMO_PHONE_NUMBERS.has(digits)) return true;
+	return /^58\d{3}0{7}$/.test(digits);
+}
+
+/**
+ * Construye el texto plano del ticket de pedido para WhatsApp o portapapeles.
+ * @param store Configuración de la tienda activa.
+ * @param items Productos y variantes en el carrito.
+ * @param bcvRate Tasa de cambio BCV en bolívares por dólar.
+ * @param order Datos de entrega y pago del cliente.
+ */
+export function buildWhatsAppOrderMessage(
 	store: StoreConfig,
 	items: CartItem[],
 	bcvRate: number,
@@ -56,7 +81,24 @@ export function buildWhatsAppOrderUrl(
 
 	lines.push("", "_Tasa BCV referencial sujeta a confirmación al pagar._");
 
-	const encodedMessage = encodeURIComponent(lines.join("\n"));
-	const cleanPhone = store.whatsappPhone.replace(/\D/g, "");
+	return lines.join("\n");
+}
+
+/**
+ * Construye el enlace wa.me codificado a partir del ticket de pedido.
+ * @param store Configuración de la tienda activa.
+ * @param items Productos y variantes en el carrito.
+ * @param bcvRate Tasa de cambio BCV en bolívares por dólar.
+ * @param order Datos de entrega y pago del cliente.
+ */
+export function buildWhatsAppOrderUrl(
+	store: StoreConfig,
+	items: CartItem[],
+	bcvRate: number,
+	order: OrderCheckoutData,
+): string {
+	const message = buildWhatsAppOrderMessage(store, items, bcvRate, order);
+	const encodedMessage = encodeURIComponent(message);
+	const cleanPhone = normalizeWhatsAppPhone(store.whatsappPhone);
 	return `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
 }

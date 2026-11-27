@@ -1,61 +1,76 @@
 <div align="center">
 
-# 🛍️ Snap Catálogo
-### Motor de Catálogo Interactivo Multi-Tienda *(White-Label)*
+# Snap Catálogo
+### Motor de Catálogo Interactivo Multi-Tienda (*White-Label*)
 
 Aplicación web *mobile-first* diseñada para comercios que venden por WhatsApp y necesitan convertir visitas en pedidos estructurados en **3 toques**, con identidad visual adaptable por marca, conversión automática a **tasa BCV diaria** y conexión desacoplada a múltiples fuentes de inventario.
 
 <p>
-  <img src="https://img.shields.io/badge/Vue-3.x-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" alt="Vue 3" />
+  <a href="https://snap-catalogo-demo.netlify.app/?tienda=kinetix">
+    <img src="https://img.shields.io/badge/Demo_En_Vivo-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" alt="Demo en vivo Netlify" />
+  </a>
+  <img src="https://img.shields.io/badge/Vue-3.5-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" alt="Vue 3" />
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript 5" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS v4" />
-  <img src="https://img.shields.io/badge/Vite-Bundler-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
-  <img src="https://img.shields.io/badge/Vitest-Tested-6E9F18?style=for-the-badge&logo=vitest&logoColor=white" alt="Vitest" />
-  <img src="https://img.shields.io/badge/Bundle_Gzip-53_kB-success?style=for-the-badge" alt="Bundle Size" />
+  <img src="https://img.shields.io/badge/Vitest-11%2F11_Tests-6E9F18?style=for-the-badge&logo=vitest&logoColor=white" alt="Vitest" />
+  <img src="https://img.shields.io/badge/Bundle_Gzip-53.3_kB-success?style=for-the-badge" alt="Bundle Size" />
 </p>
 
-[Ver Demo Kinetix Lab](https://TU-SITIO.netlify.app/?tienda=kinetix) · [Ver Demo Brasa Urbana](https://TU-SITIO.netlify.app/?tienda=brasa-urbana)
+[Ver Demo Kinetix Lab](https://snap-catalogo-demo.netlify.app/?tienda=kinetix) · [Ver Demo Brasa Urbana](https://snap-catalogo-demo.netlify.app/?tienda=brasa-urbana)
 
 </div>
 
 ---
 
-## 🌐 Demos en Vivo (Instancias Multi-Tienda)
+## Demos en Vivo (Instancias Multi-Tienda)
 
 Un único despliegue sirve múltiples rubros comerciales leyendo el parámetro `?tienda=<slug>` desde la URL:
 
 | Rubro Comercial | Marca Demo | Enlace Directo | Esquema Visual |
 | :--- | :--- | :--- | :--- |
-| 🏋️ **Ropa Deportiva & Suplementos** | `Kinetix Lab` | [`?tienda=kinetix`](https://TU-SITIO.netlify.app/?tienda=kinetix) | Oscuro · Acento Neón |
-| 🍔 **Delivery & Comida Rápida** | `Brasa Urbana` | [`?tienda=brasa-urbana`](https://TU-SITIO.netlify.app/?tienda=brasa-urbana) | Claro · Acento Cálido |
+| **Ropa Deportiva & Suplementos** | `Kinetix Lab` | [`/?tienda=kinetix`](https://snap-catalogo-demo.netlify.app/?tienda=kinetix) | Claro · Acento Técnico · `EntryGate` activo |
+| **Delivery & Comida Rápida** | `Brasa Urbana` | [`/?tienda=brasa-urbana`](https://snap-catalogo-demo.netlify.app/?tienda=brasa-urbana) | Oscuro Nocturno · Acento Brasa · Acceso directo |
 
 ---
 
-## ⚡ Características Técnicas Destacadas
+## Revisión Visual de Capturas en Producción
 
-### 🎨 Arquitectura Camaleón Multi-Tienda (`OKLCH` + `Display-P3`)
+Las cuatro capturas tomadas desde el navegador móvil en `https://snap-catalogo-demo.netlify.app/` confirman una ejecución visual sólida y coherente en ambos esquemas de color:
+
+1. **Selector de líneas (`Kinetix Lab`):** Los cuatro bloques de categoría (*Hombre*, *Mujer*, *Suplementos*, *Accesorios*) mantienen proporciones uniformes, buen aire visual y contraste limpio sobre el fondo claro.
+2. **Catálogo en cuadrícula (`Kinetix Lab`):** Se aprecia la barra superior con la tasa BCV activa (`BCV: Bs. 926.36`), el selector `USD $`, los filtros por categoría y las tarjetas de producto con precios duales en dólares y bolívares.
+3. **Modal de pedido (`Kinetix Lab`):** La vista *Tu Pedido* organiza con claridad la prenda seleccionada, cantidad, modalidad (*Delivery* / *Pick-up*), zona de entrega, métodos de pago, nota opcional y el total dual (`$55.00` y `Bs. 50.949,76`) encima del botón verde de WhatsApp.
+4. **Modo oscuro nocturno (`Brasa Urbana`):** El cambio de tema a oscuro respeta el contraste de textos, etiquetas (*Top Ventas*, *Chef Pick*), recargos por variante (`+$2.50`, `+$3.50`) y botones de acción.
+
+> **Seguridad al probar y capturar en móvil:** Evita usar números aleatorios o secuencias que coincidan con líneas reales en entornos de prueba, y prefiere números ficticios no asignados como `+58 412-0000000` (`584120000000`) o una confirmación explícita antes de disparar enlaces `wa.me` durante pruebas en el teléfono.
+
+---
+
+## Características Técnicas Destacadas
+
+### Arquitectura Camaleón Multi-Tienda (`OKLCH` + `Display-P3`)
 * Cada comercio inyecta sus propios tokens semánticos (`accent`, `onAccent`, `highlight`, radios de borde y esquema claro/oscuro) en tiempo de ejecución **sin recompilar CSS**.
 * Contraste perceptual calculado mediante **APCA** para garantizar legibilidad automática en botones y etiquetas sin importar el color de marca.
 
-### 💱 Consenso Multi-Proveedor de Tasa BCV *(Resiliencia Offline)*
+### Consenso Multi-Proveedor de Tasa BCV (*Resiliencia Offline*)
 * Consulta concurrente (`Promise.allSettled`) a múltiples APIs públicas del Banco Central de Venezuela con selección protectora de tasa vigente.
 * Caché local de **30 minutos**, botón de recarga manual en cabecera y tasa de respaldo configurable por comercio en caso de caída de red.
 * **Precisión Financiera:** Todos los cálculos monetarios (`USD <-> Bs.`) se ejecutan en centavos enteros escalados para evitar imprecisiones binarias de punto flotante (`IEEE 754`).
 
-### 🔌 Patrón Repositorio / Adaptador para Inventario
+### Patrón Repositorio / Adaptador para Inventario
 Interfaz única `IStoreRepository` que permite cambiar el origen de datos por tienda sin modificar ni un solo componente Vue:
 1. **`local` (Semillas Estáticas):** Carga perezosa (*lazy loading*) para demos instantáneas o catálogos fijos.
-2. **`sheets` (Google Sheets — Costo \$0):** Hoja publicada como CSV; el comerciante edita precios y stock en tiempo real desde su teléfono.
+2. **`sheets` (Google Sheets — Costo `$0`):** Hoja publicada como CSV; el comerciante edita precios y stock en tiempo real desde su teléfono.
 3. **`api` (API REST):** Integración directa con backends propios (FastAPI, Supabase, etc.).
 
-### 📱 UX Nativa sin Bloat (`45.7 kB` JS + `7.3 kB` CSS gzip)
+### UX Nativa sin Bloat (`45.9 kB` JS + `7.4 kB` CSS gzip)
 * **View Transitions API:** Conmutador fluido entre vista de cuadrícula (`2 columnas`) y vista de detalle (`1 columna`).
 * **Accesibilidad Nativa:** Ficha de producto y flujo de checkout construidos sobre `<dialog>` nativo (*top layer*, cierre con `Escape` y regiones `aria-live="polite"`).
-* **Micro-interacciones Táctiles:** Stepper reversible en tarjeta (`🗑 / - | N | +`) con áreas táctiles mínimas de `44×44px` (`touch-action: manipulation`) y curva física *spring* CSS (`linear()`).
+* **Micro-interacciones Táctiles:** Stepper reversible en tarjeta (`🗑 / - | N | +`) con áreas táctiles mínimas de `44x44px` (`touch-action: manipulation`) y curva física *spring* CSS (`linear()`).
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 | Capa | Tecnología | Propósito |
 | :--- | :--- | :--- |
@@ -66,12 +81,12 @@ Interfaz única `IStoreRepository` que permite cambiar el origen de datos por ti
 
 ---
 
-## 📂 Arquitectura del Proyecto
+## Arquitectura del Proyecto
 
 ```text
 src/
 ├── config/
-│   └── stores.registry.ts          # Registro multi-tienda (identidad OKLCH, reglas y fuente BD)
+│   └── stores.registry.ts          # Registro multi-tienda (identidad OKLCH, reglas y origen BD)
 ├── types/
 │   └── store.types.ts              # Contratos estrictos de dominio e inventario
 ├── services/
@@ -93,7 +108,7 @@ src/
 
 ---
 
-## 🚀 Instalación y Comandos
+## Instalación y Comandos
 
 Clona el repositorio e instala las dependencias locales:
 
@@ -117,7 +132,7 @@ npm run preview
 
 ---
 
-## 📊 Cómo Conectar un Catálogo por Google Sheets *(Costo \$0)*
+## Cómo Conectar un Catálogo por Google Sheets *(Costo `$0`)*
 
 Permite que cualquier comercio administre su inventario sin panel administrativo ni servidores adicionales:
 
@@ -143,27 +158,11 @@ Permite que cualquier comercio administre su inventario sin panel administrativo
 
 ---
 
-## ✅ Validación Pre-Producción y Despliegue en Netlify
+## Despliegue SPA en Netlify
 
-### Paso 1: Recompilar `dist/` y Ejecutar Auditoría Real *(Niveles 2 y 3)*
-Genera el paquete optimizado y expón el servidor local en tu red para auditar rendimiento con Lighthouse y probar en dispositivos móviles reales:
+El proyecto incluye `netlify.toml` para redirigir rutas SPA hacia `index.html`, aplicar caché inmutable en `/stores/*` y reforzar cabeceras de seguridad:
 
-```powershell
-npm run build
-npm run preview -- --host
-```
-
-> [!TIP]
-> Abre la URL de red local que arroja Vite en tu teléfono móvil para verificar los tiempos de carga bajo datos móviles, las transiciones de vista y el salto directo a la app de WhatsApp (`wa.me`).
-
-### Paso 2: Configuración de Despliegue SPA en Netlify
-Asegúrate de incluir un archivo `_redirects` dentro de `public/` (o configurar `netlify.toml`) para que todas las rutas y parámetros `?tienda=<slug>` resuelvan correctamente hacia `index.html`:
-
-```text
-/*    /index.html   200
-```
-
-| Ajuste en Netlify | Valor Recomendado |
+| Ajuste en Netlify | Valor |
 | :--- | :--- |
 | **Build command** | `npm run build` |
 | **Publish directory** | `dist` |
