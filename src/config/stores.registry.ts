@@ -1,8 +1,8 @@
 import type { StoreConfig } from "@/types/store.types";
 
 /**
- * Registro central de tiendas demostración y clientes.
- * Cada entrada define su identidad OKLCH, reglas de negocio y fuente de BD.
+ * ES: Configuración de cada tienda: tema, reglas del pedido y origen del catálogo.
+ * EN: Each store's configuration: theme, order rules, and catalog source.
  */
 export const STORES_REGISTRY: Record<string, StoreConfig> = {
 	kinetix: {
@@ -93,7 +93,8 @@ export const DEFAULT_STORE_SLUG = "kinetix";
 const DEFAULT_STORE = STORES_REGISTRY[DEFAULT_STORE_SLUG] as StoreConfig;
 
 /**
- * Resuelve la configuración de tienda leyendo el parámetro `?tienda=<slug>` de la URL.
+ * ES: Lee `?tienda=` y usa la tienda predeterminada si el slug no existe.
+ * EN: Reads `?tienda=` and uses the default store when the slug is unknown.
  */
 export function resolveActiveStoreConfig(): StoreConfig {
 	const params = new URLSearchParams(window.location.search);

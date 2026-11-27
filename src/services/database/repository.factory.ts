@@ -1,17 +1,15 @@
 import type { DataSourceConfig, Product } from "@/types/store.types";
 
-/**
- * Contrato unificado que debe cumplir cualquier origen de datos de una tienda.
- */
 export interface IStoreRepository {
 	getProducts(): Promise<Product[]>;
 }
 
 /**
- * Crea un repositorio conectado a un Google Sheet publicado como CSV ("Publicar en la web").
- * Columnas esperadas: id,sku,name,subtitle,category,badge,priceUsd,images,description,variantLabel,variants
- * Formato multi-valor: 'images' separadas por '|' y 'variants' en formato 'S:5|M:10|L:2'.
- * @param csvUrl URL pública de exportación CSV de Google Sheets.
+ * ES: Lee un CSV publicado desde Google Sheets. Columnas, en este orden: `id,sku,name,subtitle,category,badge,priceUsd,images,description,variantLabel,variants`.
+ * EN: Reads a published Google Sheets CSV. Columns, in order: `id,sku,name,subtitle,category,badge,priceUsd,images,description,variantLabel,variants`.
+ * ES: `images` usa `|` como separador; `variants` sigue el formato `S:5|M:10|L:2`.
+ * EN: `images` uses `|` as a separator; `variants` follows the `S:5|M:10|L:2` format.
+ * @param csvUrl ES: URL pública de exportación CSV. EN: Public CSV export URL.
  */
 function createGoogleSheetsRepository(csvUrl: string): IStoreRepository {
 	return {
@@ -77,9 +75,10 @@ function createGoogleSheetsRepository(csvUrl: string): IStoreRepository {
 }
 
 /**
- * Crea un repositorio conectado a un backend REST (FastAPI o Supabase REST API).
- * @param baseUrl URL base del servicio REST sin barra final.
- * @param apiKey Clave pública opcional para autenticación por cabecera.
+ * ES: Consulta el endpoint `GET /products` de una API REST, como FastAPI o Supabase.
+ * EN: Reads the `GET /products` endpoint from a REST API, such as FastAPI or Supabase.
+ * @param baseUrl ES: URL base sin barra final. EN: Base URL without a trailing slash.
+ * @param apiKey ES: Clave opcional enviada en las cabeceras. EN: Optional key sent in the request headers.
  */
 function createRestApiRepository(
 	baseUrl: string,
@@ -104,9 +103,10 @@ function createRestApiRepository(
 }
 
 /**
- * Fábrica que instancia el repositorio adecuado según la configuración de la tienda activa.
- * @param source Configuración de origen de datos definida en stores.registry.ts.
- * @param localLoader Función perezosa (lazy import) para cargar semillas locales sin inflar el bundle.
+ * ES: Elige Sheets, REST o datos locales según la tienda. El loader local se ejecuta bajo demanda.
+ * EN: Selects Sheets, REST, or local data for the store. The local loader runs on demand.
+ * @param source ES: Configuración del origen de datos. EN: Data source configuration.
+ * @param localLoader ES: Carga las semillas locales cuando hacen falta. EN: Loads local seed data only when needed.
  */
 export function createStoreRepository(
 	source: DataSourceConfig,

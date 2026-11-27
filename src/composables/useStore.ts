@@ -26,8 +26,9 @@ const bcvSnapshot = ref<BcvRateSnapshot>({
 });
 
 /**
- * Aplica los tokens OKLCH, radios y esquema de color de la tienda en el DOM raíz.
- * @param store Configuración visual y operativa de la tienda activa.
+ * ES: Los tokens se aplican en la raíz para que toda la app adopte el tema de la tienda activa.
+ * EN: Root-level tokens let the whole app use the active store's theme.
+ * @param store ES: Configuración de la tienda activa. EN: Active store configuration.
  */
 function applyStoreThemeToDocument(store: StoreConfig): void {
 	const root = document.documentElement;
@@ -40,10 +41,6 @@ function applyStoreThemeToDocument(store: StoreConfig): void {
 	document.title = `${store.name} — Catálogo Digital`;
 }
 
-/**
- * Inicializa la tienda activa, descarga la tasa BCV y carga el inventario desde el adaptador.
- * @param targetStore Tienda opcional para sobrescribir la tienda resuelta por URL.
- */
 async function bootstrapStore(targetStore?: StoreConfig): Promise<void> {
 	if (targetStore) {
 		activeStore.value = targetStore;
@@ -76,9 +73,6 @@ async function bootstrapStore(targetStore?: StoreConfig): Promise<void> {
 	}
 }
 
-/**
- * Fuerza la consulta en vivo de la tasa BCV ignorando el caché local.
- */
 async function refreshBcvRate(): Promise<void> {
 	if (isRefreshingBcv.value) return;
 	isRefreshingBcv.value = true;
@@ -95,9 +89,9 @@ async function refreshBcvRate(): Promise<void> {
 }
 
 /**
- * Permite cambiar de tienda demo en vivo utilizando View Transitions API
- * y sincronizando el parámetro `?tienda=` de la URL sin recargar.
- * @param slug Identificador de la tienda registrada en STORES_REGISTRY.
+ * ES: Cambia la tienda de demo sin recargar y actualiza `?tienda=` en la URL.
+ * EN: Switches the demo store without reloading and updates `?tienda=` in the URL.
+ * @param slug ES: Clave de la tienda en `STORES_REGISTRY`. EN: Store key in `STORES_REGISTRY`.
  */
 async function switchStoreDemo(slug: string): Promise<void> {
 	const nextStore = STORES_REGISTRY[slug];
@@ -118,9 +112,6 @@ async function switchStoreDemo(slug: string): Promise<void> {
 	}
 }
 
-/**
- * Composable de estado global para tienda activa, inventario, moneda y tasa BCV.
- */
 export function useStore() {
 	const categories = computed(() => {
 		const unique = new Set(products.value.map((p) => p.category));

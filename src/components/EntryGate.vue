@@ -39,7 +39,7 @@ function markAssetFailed(optionId: string): void {
     aria-labelledby="entry-gate-title"
     class="flex min-h-dvh flex-col justify-between bg-canvas text-ink"
   >
-    <!-- Switch rápido para demostraciones multi-tienda desde la pantalla initial -->
+    <!-- ES: Permite cambiar de tienda durante la demo, antes de entrar al catálogo. / EN: Switch stores during the demo before opening the catalog. -->
     <div class="border-b border-line/70 bg-card/70 px-4 py-2">
       <div
         class="mx-auto flex max-w-xl items-center justify-center gap-1.5 text-[11px]"
@@ -81,7 +81,6 @@ function markAssetFailed(optionId: string): void {
         </p>
       </header>
 
-      <!-- Cuadrícula 2x2 de iconos vectoriales por categoría -->
       <div class="mx-auto my-6 grid w-full max-w-xl grid-cols-2 gap-3.5">
         <button
           v-for="option in (props.store.entryGateOptions ?? ([] as EntryGateOption[]))"

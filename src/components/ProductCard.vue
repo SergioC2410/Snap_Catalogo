@@ -22,7 +22,8 @@ const emit = defineEmits<{
 }>();
 
 /**
- * Selecciona por defecto la primera variante con stock disponible.
+ * ES: Prioriza una variante con stock; si todas están agotadas, deja seleccionada la primera.
+ * EN: Prefers an in-stock variant; if all are sold out, keeps the first one selected.
  */
 function pickInitialVariant(
 	variants: ProductVariant[],
@@ -115,7 +116,7 @@ function handleIncrement(): void {
   <article
     class="group flex flex-col overflow-hidden rounded-prod border border-line/80 bg-elevated transition-shadow hover:shadow-sm"
   >
-    <!-- Fotografía fija 4:5 (CLS = 0) -->
+    <!-- ES: La proporción reserva espacio y evita saltos mientras carga la imagen. / EN: The fixed ratio reserves space and prevents layout shifts while the image loads. -->
     <div class="relative aspect-4/5 w-full overflow-hidden bg-card">
       <button
         type="button"
@@ -157,8 +158,6 @@ function handleIncrement(): void {
       </button>
     </div>
 
-    <!-- Cuerpo informativo y selector táctil de variantes -->
-<!-- Cuerpo informativo y selector táctil de variantes -->
     <div class="flex flex-1 flex-col p-3 sm:p-4">
       <div>
         <button
@@ -191,7 +190,6 @@ function handleIncrement(): void {
         </div>
       </div>
 
-      <!-- Variantes pegadas al precio -->
       <div
         role="radiogroup"
         :aria-label="`Seleccionar ${props.product.variantLabel}`"
@@ -222,7 +220,6 @@ function handleIncrement(): void {
         </button>
       </div>
 
-      <!-- CTA siempre alineado al borde inferior de la tarjeta -->
       <div class="mt-auto pt-3">
         <div
           v-if="activeCartQty > 0 && selectedVariant"

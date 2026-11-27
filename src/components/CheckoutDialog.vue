@@ -50,8 +50,8 @@ const isDemoPhone = computed(() =>
 );
 
 /**
- * Controla la visibilidad del campo de notas según la política de cada tienda.
- * En tiendas con política 'single-item' solo se muestra cuando el pedido tiene 1 producto.
+ * ES: En `single-item`, las notas solo aparecen cuando el carrito tiene un único ítem.
+ * EN: In `single-item` mode, notes appear only when the cart has one line item.
  */
 const showNotesField = computed(() => {
 	if (props.store.notesVisibility === "always") return true;
@@ -109,8 +109,8 @@ async function handleCopyPreviewTicket(): Promise<void> {
 }
 
 /**
- * Valida los datos mínimos de despacho. Si el número es de demostración (`584120000000`),
- * muestra el ticket en pantalla sin abrir WhatsApp para evitar envíos accidentales.
+ * ES: Con el número de demo (`584120000000`), muestra el ticket aquí en vez de abrir WhatsApp.
+ * EN: With the demo number (`584120000000`), show the ticket here instead of opening WhatsApp.
  */
 function handleSubmitOrder(): void {
 	if (props.items.length === 0) return;
@@ -170,7 +170,6 @@ function handleSubmitOrder(): void {
     @click="handleBackdropClick"
   >
     <div class="flex max-h-[92dvh] flex-col">
-      <!-- Encabezado -->
       <header class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
         <div>
           <p class="text-[11px] font-bold tracking-[0.14em] text-muted uppercase">
@@ -203,7 +202,6 @@ function handleSubmitOrder(): void {
         </div>
       </header>
 
-      <!-- Cuerpo desplazable -->
       <div class="flex-1 space-y-5 overflow-y-auto px-4 py-4">
         <div
           v-if="props.items.length === 0"
@@ -216,7 +214,6 @@ function handleSubmitOrder(): void {
         </div>
 
         <template v-else>
-          <!-- Lista editable de productos -->
           <ul class="divide-y divide-line rounded-prod border border-line bg-card/40">
             <li
               v-for="item in props.items"
@@ -261,7 +258,6 @@ function handleSubmitOrder(): void {
             </li>
           </ul>
 
-          <!-- Formulario de entrega y pago -->
           <form id="whatsapp-checkout-form" class="space-y-4" @submit.prevent="handleSubmitOrder">
             <div>
               <label for="checkout-name" class="block text-xs font-bold tracking-wider uppercase">
@@ -357,7 +353,7 @@ function handleSubmitOrder(): void {
               {{ validationError }}
             </p>
 
-            <!-- Vista previa segura cuando la tienda usa número de demostración -->
+            <!-- ES: En demo, el ticket se muestra aquí sin abrir WhatsApp. / EN: In demo mode, the ticket stays here and WhatsApp does not open. -->
             <div
               v-if="previewTicket"
               class="space-y-2.5 rounded-prod border border-amber-500/50 bg-card p-3.5 text-xs"
@@ -382,7 +378,6 @@ function handleSubmitOrder(): void {
         </template>
       </div>
 
-      <!-- Pie con Totales Duales y disparo a WhatsApp -->
       <footer
         v-if="props.items.length > 0"
         class="space-y-3 border-t border-line bg-elevated p-4"

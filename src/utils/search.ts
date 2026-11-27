@@ -9,9 +9,9 @@ export interface CatalogFilterCriteria {
 }
 
 /**
- * Normaliza texto eliminando diacríticos (tildes/eñes compuestas) y espacios redundantes.
- * Garantiza búsquedas tolerantes a errores de escritura en teclados móviles.
- * @param value Cadena de entrada a normalizar.
+ * ES: Quita los diacríticos y pasa el texto a minúsculas para que la búsqueda no dependa de las tildes.
+ * EN: Removes diacritics and lowercases text so searches do not depend on accents.
+ * @param value ES: Texto que se va a normalizar. EN: Text to normalize.
  */
 export function normalizeText(value: string): string {
   return value
@@ -22,10 +22,8 @@ export function normalizeText(value: string): string {
 }
 
 /**
- * Filtra y ordena un catálogo de productos sin mutar el arreglo original.
- * Evalúa coincidencias en nombre, subtítulo, categoría, SKU y etiquetas de variantes.
- * @param products Lista completa del inventario activo.
- * @param criteria Criterios combinados de búsqueda, categoría y ordenamiento.
+ * ES: Cada término debe aparecer en nombre, subtítulo, categoría, SKU, distintivo o variante. El ordenamiento trabaja sobre una copia.
+ * EN: Every term must match the name, subtitle, category, SKU, badge, or variant. Sorting uses a copy of the array.
  */
 export function filterAndSortProducts(
   products: readonly Product[],

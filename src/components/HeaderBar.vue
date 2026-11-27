@@ -44,7 +44,6 @@ function handleInput(event: Event): void {
 
 <template>
   <header class="sticky top-0 z-30 border-b border-line bg-canvas/92 backdrop-blur-md">
-    <!-- Franja superior: Switch multi-tienda demo + Tasa BCV recargable -->
     <div class="border-b border-line/70 bg-card/70 px-3 py-1.5 sm:px-4">
       <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-[11px]">
         <div class="flex items-center gap-1.5" role="group" aria-label="Cambiar tienda de demostración">
@@ -88,7 +87,6 @@ function handleInput(event: Event): void {
       </div>
     </div>
 
-    <!-- Barra principal de navegación (optimizada para 360px+) -->
     <div class="mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3">
       <div class="flex min-w-0 items-center gap-2 sm:gap-2.5">
         <div
@@ -138,7 +136,6 @@ function handleInput(event: Event): void {
       </div>
     </div>
 
-    <!-- Barra de búsqueda desplegable instantánea -->
     <div
       v-if="isSearchOpen"
       id="catalog-search-bar"

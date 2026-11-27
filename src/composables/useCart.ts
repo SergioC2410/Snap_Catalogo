@@ -9,15 +9,13 @@ const items = ref<CartItem[]>([]);
 const lastAnnouncement = ref<string>("");
 let initializedSlug: string | null = null;
 
-/**
- * Genera la clave compuesta única para diferenciar el mismo producto con distinta variante.
- */
 function buildCartKey(productId: string, variantId: string): string {
 	return `${productId}::${variantId}`;
 }
 
 /**
- * Calcula el precio unitario efectivo contemplando recargos por variante (ej. combos o extras).
+ * ES: Aplica el ajuste de la variante en centavos para evitar sumar precios con decimales binarios.
+ * EN: Applies the variant adjustment in cents to avoid adding floating-point prices.
  */
 export function resolveVariantUnitPrice(
 	product: Product,
@@ -29,7 +27,8 @@ export function resolveVariantUnitPrice(
 }
 
 /**
- * Lee y valida de forma defensiva el carrito persistido para un slug específico.
+ * ES: Si faltan datos, el JSON no es válido o el almacenamiento está bloqueado, empieza con el carrito vacío.
+ * EN: If data is missing, JSON is invalid, or storage is blocked, the cart starts empty.
  */
 function loadCartFromStorage(slug: string): CartItem[] {
 	try {
@@ -43,19 +42,17 @@ function loadCartFromStorage(slug: string): CartItem[] {
 }
 
 /**
- * Persiste el carrito de la tienda activa en localStorage sin lanzar excepciones en modo privado.
+ * ES: Un fallo de localStorage no debe interrumpir el carrito, por ejemplo, en navegación privada.
+ * EN: A localStorage failure must not interrupt cart actions, such as in private browsing.
  */
 function persistCartToStorage(slug: string, cartItems: CartItem[]): void {
 	try {
 		localStorage.setItem(`${STORAGE_PREFIX}${slug}`, JSON.stringify(cartItems));
 	} catch {
-		// Silencioso en entornos con almacenamiento restringido
+		// ES: No interrumpas la acción si el navegador bloquea el almacenamiento. / EN: Do not interrupt the action when the browser blocks storage.
 	}
 }
 
-/**
- * Composable reactivo del carrito de compras aislado por tienda y variante.
- */
 export function useCart() {
 	const { activeStore, bcvSnapshot } = useStore();
 
@@ -91,8 +88,9 @@ export function useCart() {
 	);
 
 	/**
-	 * Agrega una unidad (o la cantidad indicada) de un producto+variante respetando stock.
-	 * @returns true si se agregó correctamente; false si la variante está agotada.
+	 * ES: Rechaza cantidades inválidas o variantes agotadas y nunca supera el stock disponible.
+	 * EN: Rejects invalid quantities or sold-out variants and never exceeds available stock.
+	 * @returns ES: `true` si agregó unidades; `false` si no había stock o la cantidad no era válida. EN: `true` when items were added; `false` when stock or quantity is invalid.
 	 */
 	function addItem(
 		product: Product,
@@ -130,10 +128,8 @@ export function useCart() {
 	}
 
 	/**
-	 * Actualiza la cantidad exacta de un ítem; si llega a 0 lo elimina del carrito.
-	 * @param key Clave compuesta `${productId}::${variantId}`.
-	 * @param nextQuantity Nueva cantidad solicitada.
-	 * @param maxStock Límite opcional de stock disponible.
+	 * ES: Una cantidad de 0 o menos elimina el ítem; `maxStock` limita la cantidad al inventario.
+	 * EN: A quantity of 0 or less removes the item; `maxStock` caps it at available inventory.
 	 */
 	function updateQuantity(
 		key: string,
@@ -160,16 +156,10 @@ export function useCart() {
 		persistCartToStorage(activeStore.value.slug, items.value);
 	}
 
-	/**
-	 * Elimina un ítem específico del carrito.
-	 */
 	function removeItem(key: string): void {
 		updateQuantity(key, 0);
 	}
 
-	/**
-	 * Vacía por completo el carrito de la tienda activa.
-	 */
 	function clearCart(): void {
 		items.value = [];
 		lastAnnouncement.value = "Pedido vaciado.";

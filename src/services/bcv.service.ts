@@ -1,7 +1,7 @@
 import type { BcvRateSnapshot } from "@/types/store.types";
 
 const CACHE_KEY = "snap_catalogo_bcv_rate_v2";
-const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutos para reflejar cambios vespertinos del BCV
+const CACHE_TTL_MS = 30 * 60 * 1000; // ES: Se renueva cada 30 min porque la tasa puede cambiar durante el día. / EN: Refresh every 30 min because the rate can change during the day.
 const REQUEST_TIMEOUT_MS = 5000;
 
 interface DolarApiResponse {
@@ -19,7 +19,8 @@ interface CromStudioResponse {
 }
 
 /**
- * Ejecuta fetch con timeout estricto para evitar bloqueos en redes móviles lentas.
+ * ES: Corta la petición si la red tarda demasiado, para que la carga no quede esperando.
+ * EN: Aborts slow requests so the app does not stay stuck waiting for the network.
  */
 async function fetchWithTimeout<T>(
 	url: string,
@@ -94,8 +95,8 @@ async function fetchCromStudio(now: number): Promise<BcvRateSnapshot> {
 }
 
 /**
- * Selecciona la tasa más protectora y actualizada entre proveedores concurrentes.
- * Prioriza la tasa oficial más alta cuando hay desfase de sincronización entre APIs.
+ * ES: Si las APIs devuelven tasas distintas, se queda con la más alta.
+ * EN: If the APIs return different rates, this keeps the highest one.
  */
 function pickFreshestSnapshot(
 	candidates: BcvRateSnapshot[],
@@ -107,10 +108,11 @@ function pickFreshestSnapshot(
 }
 
 /**
- * Obtiene la tasa BCV oficial diaria mediante consenso concurrente + caché de 30 min.
- * @param fallbackRate Tasa de emergencia si no hay red ni caché.
- * @param forceRefresh Ignora caché local para consultar en vivo.
- * @param manualOverride Tasa fija opcional configurada directamente por el comercio.
+ * ES: Consulta dos fuentes a la vez y guarda la tasa elegida durante 30 min; si fallan, usa caché o fallback.
+ * EN: Checks two sources in parallel and caches the selected rate for 30 min; if they fail, it uses cache or fallback.
+ * @param fallbackRate ES: Tasa para cuando no hay red ni caché. EN: Rate used when there is no network or cache.
+ * @param forceRefresh ES: Fuerza la consulta y omite la caché vigente. EN: Forces a request and skips the current cache.
+ * @param manualOverride ES: Tasa fija configurada por la tienda. EN: Fixed rate configured by the store.
  */
 export async function getDailyBcvRate(
 	fallbackRate: number,
@@ -150,7 +152,7 @@ export async function getDailyBcvRate(
 		try {
 			localStorage.setItem(CACHE_KEY, JSON.stringify(best));
 		} catch {
-			// Silencioso en modo incógnito restringido
+			// ES: Ignora el fallo si el navegador bloquea localStorage. / EN: Ignore the error when the browser blocks localStorage.
 		}
 		return best;
 	}

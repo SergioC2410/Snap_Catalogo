@@ -9,20 +9,23 @@ export interface OrderCheckoutData {
 	notes?: string;
 }
 
+// Test numbers: we don't open real WhatsApp with these.
+// Números de prueba: con estos no abrimos WhatsApp real.
 const DEMO_PHONE_NUMBERS = new Set<string>(["584120000000", "584120000001"]);
 
 /**
- * Normaliza el teléfono de la tienda dejando únicamente dígitos.
- * @param phone Número configurado en la tienda.
+ * wa.me only accepts digits, so we strip "+", spaces, dashes, etc.
+ * wa.me solo acepta dígitos, así que limpiamos "+", espacios, guiones, etc.
  */
 export function normalizeWhatsAppPhone(phone: string): string {
 	return phone.replace(/\D/g, "");
 }
 
 /**
- * Indica si el número configurado corresponde a un número ficticio de pruebas/demo
- * para evitar abrir chats externos por accidente.
- * @param phone Número de teléfono de la tienda.
+ * Is this a fake/demo number? If so, skip opening the real chat by mistake.
+ * Covers the hard-coded test numbers and the common 58XXX0000000 placeholder pattern.
+ * ¿Es un número de mentira (demo/testing)? En ese caso no hay que abrir el chat
+ * real por accidente. Cubre los fijos de prueba y el relleno típico 58XXX0000000.
  */
 export function isDemoWhatsAppPhone(phone: string): boolean {
 	const digits = normalizeWhatsAppPhone(phone);
@@ -32,11 +35,11 @@ export function isDemoWhatsAppPhone(phone: string): boolean {
 }
 
 /**
- * Construye el texto plano del ticket de pedido para WhatsApp o portapapeles.
- * @param store Configuración de la tienda activa.
- * @param items Productos y variantes en el carrito.
- * @param bcvRate Tasa de cambio BCV en bolívares por dólar.
- * @param order Datos de entrega y pago del cliente.
+ * Builds the order text for WhatsApp or clipboard copy.
+ * We round per line item to cents before summing so the total doesn't drift.
+ * Arma el texto del pedido para WhatsApp o para copiar al portapapeles.
+ * Redondeamos por ítem a centavos antes de sumar para que el total no se
+ * vaya de decimales.
  */
 export function buildWhatsAppOrderMessage(
 	store: StoreConfig,
@@ -85,11 +88,8 @@ export function buildWhatsAppOrderMessage(
 }
 
 /**
- * Construye el enlace wa.me codificado a partir del ticket de pedido.
- * @param store Configuración de la tienda activa.
- * @param items Productos y variantes en el carrito.
- * @param bcvRate Tasa de cambio BCV en bolívares por dólar.
- * @param order Datos de entrega y pago del cliente.
+ * wa.me link with the message already encoded, pointing to the store's number.
+ * Link wa.me con el mensaje ya codificado, apuntando al número de la tienda.
  */
 export function buildWhatsAppOrderUrl(
 	store: StoreConfig,
