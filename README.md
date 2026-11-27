@@ -37,10 +37,15 @@ Un único despliegue sirve múltiples rubros comerciales leyendo el parámetro `
 
 Las cuatro capturas tomadas desde el navegador móvil en `https://snap-catalogo-demo.netlify.app/` confirman una ejecución visual sólida y coherente en ambos esquemas de color:
 
-1. **Selector de líneas (`Kinetix Lab`):** Los cuatro bloques de categoría (*Hombre*, *Mujer*, *Suplementos*, *Accesorios*) mantienen proporciones uniformes, buen aire visual y contraste limpio sobre el fondo claro.
-2. **Catálogo en cuadrícula (`Kinetix Lab`):** Se aprecia la barra superior con la tasa BCV activa (`BCV: Bs. 926.36`), el selector `USD $`, los filtros por categoría y las tarjetas de producto con precios duales en dólares y bolívares.
-3. **Modal de pedido (`Kinetix Lab`):** La vista *Tu Pedido* organiza con claridad la prenda seleccionada, cantidad, modalidad (*Delivery* / *Pick-up*), zona de entrega, métodos de pago, nota opcional y el total dual (`$55.00` y `Bs. 50.949,76`) encima del botón verde de WhatsApp.
-4. **Modo oscuro nocturno (`Brasa Urbana`):** El cambio de tema a oscuro respeta el contraste de textos, etiquetas (*Top Ventas*, *Chef Pick*), recargos por variante (`+$2.50`, `+$3.50`) y botones de acción.
+Las cinco capturas tomadas desde el navegador móvil en `https://snap-catalogo-demo.netlify.app/` muestran el flujo completo de navegación, selección de modalidad y cierre de pedido en ambos esquemas visuales:
+
+| Vista del Flujo | Captura | Descripción |
+| :--- | :--- | :--- |
+| **Selector de líneas (`Kinetix Lab`)** | ![Selector de líneas en Kinetix Lab](./docs/screenshots/kinetix-gate.webp) | Los cuatro bloques de categoría (*Hombre*, *Mujer*, *Suplementos*, *Accesorios*) mantienen proporciones uniformes, buen aire visual y contraste limpio sobre el fondo claro. |
+| **Catálogo en cuadrícula (`Kinetix Lab`)** | ![Catálogo en cuadrícula de Kinetix Lab](./docs/screenshots/kinetix-catalog.webp) | Se aprecia la barra superior con la tasa BCV activa (`BCV: Bs. 926.36`), el selector `USD $`, los filtros por categoría y las tarjetas de producto con precios duales en dólares y bolívares. |
+| **Catálogo en modo oscuro (`Brasa Urbana`)** | ![Catálogo en modo oscuro de Brasa Urbana](./docs/screenshots/brasa-catalog.webp) | El cambio a tema oscuro respeta el contraste de textos, etiquetas (*Top Ventas*, *Chef Pick*), recargos por variante (`+$2.50`, `+$3.50`) y botones de acción. |
+| **Modalidad Pick-up (`Brasa Urbana`)** | ![Modalidad Pick-up en Brasa Urbana](./docs/screenshots/brasa-pickup.webp) | Configura la recogida directa en tienda (*Pick-up*) dentro del flujo de pedido con cálculo claro en moneda dual y sin depender de zona de delivery. |
+| **Checkout por WhatsApp** | ![Resumen de pedido y envío por WhatsApp](./docs/screenshots/whatsapp-checkout.webp) | La vista *Tu Pedido* organiza el ítem o pedido seleccionado, cantidad, modalidad, métodos de pago, nota opcional y el total dual (`$55.00` y `Bs. 50.949,76`) encima del botón verde de WhatsApp. |
 
 > **Seguridad al probar y capturar en móvil:** Evita usar números aleatorios o secuencias que coincidan con líneas reales en entornos de prueba, y prefiere números ficticios no asignados como `+58 412-0000000` (`584120000000`) o una confirmación explícita antes de disparar enlaces `wa.me` durante pruebas en el teléfono.
 
