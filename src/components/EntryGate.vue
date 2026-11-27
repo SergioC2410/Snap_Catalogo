@@ -39,7 +39,7 @@ function markAssetFailed(optionId: string): void {
     aria-labelledby="entry-gate-title"
     class="flex min-h-dvh flex-col justify-between bg-canvas text-ink"
   >
-    <!-- Switch rápido para demostraciones multi-tienda desde la pantalla inicial -->
+    <!-- Switch rápido para demostraciones multi-tienda desde la pantalla initial -->
     <div class="border-b border-line/70 bg-card/70 px-4 py-2">
       <div
         class="mx-auto flex max-w-xl items-center justify-center gap-1.5 text-[11px]"
@@ -90,13 +90,15 @@ function markAssetFailed(optionId: string): void {
           class="tactile-btn group flex flex-col justify-between overflow-hidden rounded-prod border border-line bg-card/80 p-3.5 text-left transition-colors hover:border-accent hover:bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           @click="handleChoose(option.filterCategory)"
         >
-          <div class="flex aspect-5/4 w-full items-center justify-center rounded-lg bg-elevated/80 p-4">
+<div class="flex aspect-5/4 w-full items-center justify-center rounded-lg bg-elevated/80 p-4">
             <img
               v-if="option.iconSvgPath && !failedAssets[option.id]"
               :src="option.iconSvgPath"
               alt=""
               aria-hidden="true"
-              class="in-data-[theme='dark']:invert[[data-theme='dark']_&]:invert"
+              width="96"
+              height="96"
+              class="size-20 object-contain transition-transform duration-300 group-hover:scale-105 sm:size-24 in-data-[theme='dark']:invert"
               @error="markAssetFailed(option.id)"
             />
 
@@ -104,6 +106,8 @@ function markAssetFailed(optionId: string): void {
               v-else-if="option.imageUrl && !failedAssets[option.id]"
               :src="option.imageUrl"
               :alt="option.label"
+              width="400"
+              height="320"
               class="size-full rounded-md object-cover"
               @error="markAssetFailed(option.id)"
             />

@@ -12,6 +12,7 @@ const props = defineProps<{
 	displayCurrency: "USD" | "VES";
 	bcvRate: number;
 	cartQuantities: Record<string, number>;
+	priority?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -125,8 +126,11 @@ function handleIncrement(): void {
         <img
           :src="props.product.images[0]"
           :alt="props.product.name"
+          width="800"
+          height="1000"
           class="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-          loading="lazy"
+          :loading="props.priority ? 'eager' : 'lazy'"
+          :fetchpriority="props.priority ? 'high' : 'auto'"
           decoding="async"
         />
       </button>

@@ -240,13 +240,14 @@ function resetFilters(): void {
           "
         >
           <ProductCard
-            v-for="product in visibleProducts"
+            v-for="(product, index) in visibleProducts"
             :key="product.id"
             :product="product"
             :layout-mode="layoutMode"
             :display-currency="displayCurrency"
             :bcv-rate="bcvSnapshot.usd"
             :cart-quantities="cartQuantityByKey"
+            :priority="index < 2"
             @open-detail="handleOpenDetail"
             @quick-add="handleQuickAdd"
             @update-quantity="updateQuantity"

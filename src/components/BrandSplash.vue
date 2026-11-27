@@ -26,8 +26,8 @@ onMounted(() => {
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)",
 	).matches;
-	const visibleDurationMs = prefersReducedMotion ? 500 : 950;
-	const fadeDurationMs = 260;
+	const visibleDurationMs = prefersReducedMotion ? 250 : 580;
+	const fadeDurationMs = 220;
 
 	leaveTimerId = window.setTimeout(() => {
 		isLeaving.value = true;
@@ -114,27 +114,23 @@ function getInitials(name: string): string {
 }
 
 .splash-bar {
-  animation: progress-fill 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: progress-fill 560ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes mark-reveal {
   0% {
-    opacity: 0;
-    transform: scale(0.72) translateY(8px);
+    transform: scale(0.92);
   }
   100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
   }
 }
 
 @keyframes content-fade {
   0% {
-    opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(4px);
   }
   100% {
-    opacity: 1;
     transform: translateY(0);
   }
 }

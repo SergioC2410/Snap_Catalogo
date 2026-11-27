@@ -69,7 +69,6 @@ function handleInput(event: Event): void {
         <button
           type="button"
           class="tactile-btn price-tabular inline-flex items-center gap-1.5 rounded-ctrl px-2 py-1 font-semibold text-muted transition-colors hover:bg-elevated hover:text-ink"
-          aria-label="Actualizar tasa BCV en vivo"
           title="Tocar para actualizar tasa BCV"
           @click="emit('refreshBcv')"
         >
@@ -79,6 +78,7 @@ function handleInput(event: Event): void {
             aria-hidden="true"
           />
           <span>BCV: Bs. {{ props.bcvSnapshot.usd.toFixed(2) }}</span>
+          <span class="sr-only">, tocar para actualizar tasa en vivo</span>
           <RefreshCw
             class="size-3"
             :class="{ 'animate-spin': props.isRefreshingBcv }"
@@ -117,11 +117,11 @@ function handleInput(event: Event): void {
         <button
           type="button"
           class="tactile-btn price-tabular inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-ctrl border border-line bg-elevated px-2.5 text-xs font-bold text-ink hover:border-accent sm:px-3.5"
-          :aria-label="`Cambiar moneda principal. Actual: ${props.displayCurrency}`"
           @click="emit('toggleCurrency')"
         >
           <ArrowLeftRight class="size-3.5 shrink-0" aria-hidden="true" />
           <span>{{ props.displayCurrency === 'USD' ? 'USD $' : 'Bs. BCV' }}</span>
+          <span class="sr-only">, cambiar moneda principal</span>
         </button>
 
         <button
